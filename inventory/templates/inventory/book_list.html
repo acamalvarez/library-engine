@@ -1,0 +1,24 @@
+{% extends 'inventory/base.html' %}
+
+{% block content %}
+  <header>
+      <h1>Library Book List</h1>
+  </header>
+  <main>
+    <section class="book-list">
+      {% for object in object_list %}
+        <article class="book-item">
+          <div class="book-details">
+            <img src="https://placehold.co/90x160?text=Book" alt="Book Image">
+            <div class="book-info">
+              <p class="book-author">{{ object.author }}</p>
+              <p class="book-category">{{ object.category }}</p>
+              <p class="book-copies">Available: {{ object.available_copies }}</p>
+            </div>
+          </div>
+          <a href="/books/{{ object.id }}/"><h2 class="book-title">{{ object.title }}</h2></a>
+        </article>
+      {% endfor %}
+      </section>
+  </main>
+{% endblock content %}

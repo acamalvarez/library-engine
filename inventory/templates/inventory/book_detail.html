@@ -1,0 +1,19 @@
+{% extends 'inventory/base.html' %}
+
+{% block content %}
+  <header>
+      <h1>Book Detail</h1>
+  </header>
+  <main>
+    <section class="book-detail">
+      <img src="https://placehold.co/270x480?text=Book" alt="Book Image">
+      <div class="book-info">
+        <h2 class="book-title">{{ book.title }}</h2>
+        <p class="book-author">{{ book.author }}</p>
+        <p class="book-category">{{ book.category }}</p>
+        <p class="book-copies">Available: {{ book.available_copies }}</p>
+        <p class="book-description">{{ book.summary }}</p>
+      </div>
+    </section>
+  </main>
+{% endblock content %}
