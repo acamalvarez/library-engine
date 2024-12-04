@@ -14,9 +14,7 @@ from pathlib import Path
 
 import environ
 
-env = environ.Env(
-    DEBUG=(bool, False)
-)
+env = environ.Env(DEBUG=(bool, False))
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -56,6 +54,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "inventory.middleware.logging.LoggingMiddleware",
 ]
 
 ROOT_URLCONF = "library.urls"
@@ -139,19 +138,46 @@ EMAIL_HOST_USER = env("EMAIL_HOST_USER")
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "{levelname} {asctime} {module} {process:d} {thread:d} {message}",
+            "style": "{",
+        },
+        "simple": {
+            "format": "{levelname} {message}",
+            "style": "{",
+        },
+        "json": {
+            "()": "inventory.loggers.JSONFormatter",
+            "fmt_keys": {
+                "level": "levelname",
+                "message": "message",
+                "timestamp": "timestamp",
+                "logger": "name",
+                "module": "module",
+                "function": "funcName",
+                "line": "lineno",
+                "thread_name": "threadName",
+            },
+        },
+    },
     "handlers": {
         "console": {
             "class": "logging.StreamHandler",
-            "level": env("LOG_LEVEL"),
+            "level": env("DEFAULT_LOG_LEVEL"),
+            "formatter": "simple",
         },
         "file": {
             "class": "logging.FileHandler",
-            "level": "DEBUG",
-            "filename": env("LOG_FILENAME")
-        }
+            "level": env("FILE_LOG_LEVEL"),
+            "filename": env("LOG_FILENAME"),
+            "formatter": "json",
+        },
     },
-    "root": {
-        "handlers": ["console", "file"],
-        "level": env("LOG_LEVEL"),
+    "loggers": {
+        "": {
+            "handlers": ["console", "file"],
+            "level": env("LOGGER_LOG_LEVEL"),
+        },
     },
 }
