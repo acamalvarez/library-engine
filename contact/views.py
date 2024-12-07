@@ -34,9 +34,11 @@ class ContactView(FormView):
         except:
             logger.error("The was an error with sending email.")
 
-        try:
-            form.save()
-        except:
-            logger.error("There was an error saving the form.")
-
         return super().form_valid(form)
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if self.form_invalid(form):
+            logger.error(form.errors)
+
+        return super().post(request, *args, **kwargs)

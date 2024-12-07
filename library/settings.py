@@ -173,10 +173,15 @@ LOGGING = {
             "filename": env("LOG_FILENAME"),
             "formatter": "json",
         },
+        "logtail": {
+            "class": "logtail.LogtailHandler",
+            "source_token": env("BETTER_STACK_TOKEN"),
+            "level": "CRITICAL",
+        }
     },
     "loggers": {
         "": {
-            "handlers": ["console", "file"],
+            "handlers": ["console", "file", "logtail"],
             "level": env("LOGGER_LOG_LEVEL"),
         },
     },

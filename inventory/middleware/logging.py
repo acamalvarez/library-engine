@@ -1,5 +1,6 @@
 import logging
 import time
+from http import HTTPStatus
 
 logger = logging.getLogger(__name__)
 
@@ -21,6 +22,8 @@ class LoggingMiddleware:
         logger.info(request_data)
 
         response = self.get_response(request)
+        if response.status_code == HTTPStatus.NOT_FOUND:
+            logger.warning(f"{HTTPStatus.NOT_FOUND} was raised")
 
         duration = time.time() - start_time
         response_dict = {
