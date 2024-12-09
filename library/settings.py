@@ -10,9 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
-from pathlib import Path
-
 import environ
+import google.cloud.logging
+from pathlib import Path
 
 env = environ.Env(DEBUG=(bool, False))
 
@@ -55,6 +55,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "inventory.middleware.logging.LoggingMiddleware",
+    "google.cloud.logging_v2.handlers.middleware.RequestMiddleware",
 ]
 
 ROOT_URLCONF = "library.urls"
@@ -135,6 +136,15 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 EMAIL_HOST_USER = env("EMAIL_HOST_USER")
 
+
+GS_PROJECT_ID = env("GS_PROJECT_ID")
+from google.oauth2 import service_account
+
+GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
+    env("GS_CREDENTIALS")
+)
+client = google.cloud.logging.Client(credentials=GS_CREDENTIALS)
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -176,13 +186,29 @@ LOGGING = {
         "logtail": {
             "class": "logtail.LogtailHandler",
             "source_token": env("BETTER_STACK_TOKEN"),
-            "level": "CRITICAL",
-        }
+            "level": "WARNING",
+        },
+        "cloud_logging_handler": {
+            "class": "google.cloud.logging.handlers.CloudLoggingHandler",
+            "client": client,
+            "level": "WARNING",
+        },
+        "structured_log_handler": {
+            "class": "google.cloud.logging.handlers.StructuredLogHandler"
+        },
     },
     "loggers": {
         "": {
-            "handlers": ["console", "file", "logtail"],
+            "handlers": ["console", "file", "logtail", "cloud_logging_handler", "structured_log_handler"],
             "level": env("LOGGER_LOG_LEVEL"),
+        },
+        "cloud_logger": {
+            "handlers": ["cloud_logging_handler"],
+            "level": "WARNING",
+        },
+        "structured_logger": {
+            "handlers": ["structured_log_handler"],
+            "level": "WARNING",
         },
     },
 }
