@@ -37,6 +37,7 @@ ALLOWED_HOSTS = ["*"]
 
 INSTALLED_APPS = [
     "contact.apps.ContactConfig",
+    "home.apps.HomeConfig",
     "inventory.apps.InventoryConfig",
     "django.contrib.admin",
     "django.contrib.auth",
