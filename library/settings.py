@@ -137,6 +137,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 EMAIL_HOST_USER = env("EMAIL_HOST_USER")
 
+API_KEY=env("API_KEY")
 
 GS_PROJECT_ID = env("GS_PROJECT_ID")
 from google.oauth2 import service_account

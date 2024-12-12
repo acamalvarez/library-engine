@@ -13,7 +13,7 @@ class HomeView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        api_url = "https://api.api-ninjas.com/v1/quote"
+        api_url = "https://api.api-ninjas.com/v1/quotes/"
         headers = {"X-Api-Key": settings.API_KEY}
         response = requests.get(api_url, headers=headers)
 
