@@ -1,3 +1,7 @@
+"""
+Based on https://github.com/mCodingLLC/VideosSampleCode
+"""
+
 import datetime as dt
 import json
 import logging
